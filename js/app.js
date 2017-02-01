@@ -35,7 +35,6 @@ var Player = function() {
     this.y = 380
 }
 Player.prototype.update = function(dt){
-
 }
 
 // Player.prototype.render = Enemy.prototype.render

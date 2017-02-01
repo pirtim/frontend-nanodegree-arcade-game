@@ -72,8 +72,27 @@ stg.checkStg = function() {
         img.src = this.resrc_map.tiles[key];        
     }, this)
     
-    // PROMISES
-
+    // PROMISES, ES6 required
+    var promises = [];
+    var calls = Object.keys(this.resrc_map.tiles);
+    var self = this
+    calls.forEach(function(key) {
+        promises.push(new Promise(function (resolve, reject) {
+            var img = new Image();
+            img.onload = function() {resolve(this.height);}
+            img.src = self.resrc_map.tiles[key];        
+        }));
+    }, this);
+    
+    Promise.all(promises).then(function(tilesHeight) {
+        if (!tilesHeight.reduce(function(a, b){ return (a === b) ? a : NaN; })){
+            throw new Error("Tiles are not the same size (vertically).")
+        }
+        if (self.gameboard.tile_height * (self.gameboard.numRows-1) + tilesHeight[0] > self.canvas.height){
+            throw new Error("Tiles have not enough room on canvas (vertically) (exact).")
+        }
+    }, function(reason) {
+        console.log(reason)
+    });
 }
 stg.checkStg()
-
