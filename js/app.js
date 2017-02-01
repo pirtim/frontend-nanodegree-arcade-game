@@ -2,6 +2,8 @@
 var Enemy = function() {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
+    this.x = 0
+    this.y = 60
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -11,6 +13,9 @@ var Enemy = function() {
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
 Enemy.prototype.update = function(dt) {
+    if (this.x < 400) {
+        this.x += 100 * dt
+    }
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
@@ -24,13 +29,44 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function() {
+    this.sprite = 'images/char-boy.png'
+    this.x = 200
+    this.y = 380
+}
+Player.prototype.update = function(dt){
 
+}
+
+// Player.prototype.render = Enemy.prototype.render
+Player.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Player.prototype.handleInput = function(key) {
+    var speed_v = 83
+        speed_h = 101
+    switch (key) {
+        case 'left':
+            this.x -= speed_h;
+            break;
+        case 'right':
+            this.x += speed_h;
+            break;
+        case 'up':
+            this.y -= speed_v;
+            break;
+        case 'down':
+            this.y += speed_v;
+            break;
+    }
+};
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
 
-
+var allEnemies = [new Enemy()]
+var player = new Player()
 
 // This listens for key presses and sends the keys to your
 // Player.handleInput() method. You don't need to modify this.
@@ -44,3 +80,4 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
+
