@@ -1,7 +1,5 @@
 "use strict";
 // TODO
-// Add entity and dziedziczenie
-// zwyczajnie i class keyword
 // siatka pol do poruszania
 
 var Entity = function() {
@@ -71,15 +69,9 @@ Player.prototype.handleInput = function(key) {
     }
 };
 
-// Now instantiate your objects.
-// Place all enemy objects in an array called allEnemies
-// Place the player object in a variable called player
-
 var allEnemies = [new Enemy()]
 var player = new Player()
 
-// This listens for key presses and sends the keys to your
-// Player.handleInput() method. You don't need to modify this.
 document.addEventListener('keyup', function(e) {
     var allowedKeys = {
         37: 'left',
@@ -90,4 +82,3 @@ document.addEventListener('keyup', function(e) {
 
     player.handleInput(allowedKeys[e.keyCode]);
 });
-
