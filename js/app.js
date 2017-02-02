@@ -1,61 +1,72 @@
-// Enemies our player must avoid
-var Enemy = function() {
-    // Variables applied to each of our instances go here,
-    // we've provided one for you to get started
-    this.x = 0
-    this.y = 60
+"use strict";
+// TODO
+// Add entity and dziedziczenie
+// zwyczajnie i class keyword
+// siatka pol do poruszania
 
-    // The image/sprite for our enemies, this uses
-    // a helper we've provided to easily load images
-    this.sprite = 'images/enemy-bug.png';
+var Entity = function() {
+    this.xp = undefined;
+    this.yp = undefined;
+}
+Object.defineProperty(Entity.prototype,"x",{
+    set: function(x){this.xp=x*stg.gameboard.tile_width; this._x = x},
+    get: function(x){return this._x;}});
+Object.defineProperty(Entity.prototype,"y",{
+    set:function(y){this.yp=y*stg.gameboard.tile_height; this._y = y},
+    get:function(y){return this._y;}
+});
+Entity.prototype.render = function() {
+    ctx.drawImage(Resources.get(this.sprite), this.xp, this.yp);
 };
 
-// Update the enemy's position, required method for game
-// Parameter: dt, a time delta between ticks
+var Enemy = function() {
+    Entity.call(this)
+    this.xp = 0
+    this.yp = 60
+    this.y = 2    
+    console.log(this.y)
+    console.log(this.yp) 
+    this.sprite = stg.resrc_map.enemies.bug;
+};
+Enemy.prototype = Object.create(Entity.prototype);
+Enemy.prototype.constructor = Enemy;
 Enemy.prototype.update = function(dt) {
-    if (this.x < 400) {
-        this.x += 100 * dt
+    if (this.xp < 400) {
+        this.xp += 100 * dt
     }
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
 };
 
-// Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
-
-// Now write your own player class
-// This class requires an update(), render() and
-// a handleInput() method.
 var Player = function() {
-    this.sprite = 'images/char-boy.png'
-    this.x = 200
-    this.y = 380
-}
+    Entity.call(this)
+    this.xp = 200
+    this.yp = 380
+    this.y = 2 
+    console.log(this.y)
+    console.log(this.yp) 
+    this.sprite = stg.resrc_map.characters.boy;
+};
+Player.prototype = Object.create(Entity.prototype);
+Player.prototype.constructor = Player;
 Player.prototype.update = function(dt){
 }
-
-// Player.prototype.render = Enemy.prototype.render
-Player.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
 Player.prototype.handleInput = function(key) {
-    var speed_v = 83
-        speed_h = 101
+    var speed_v = stg.gameboard.tile_height
+    var speed_h = stg.gameboard.tile_width
     switch (key) {
         case 'left':
-            this.x -= speed_h;
+            this.xp -= speed_h;
             break;
         case 'right':
-            this.x += speed_h;
+            this.xp += speed_h;
             break;
         case 'up':
-            this.y -= speed_v;
+            this.yp -= speed_v;
             break;
         case 'down':
-            this.y += speed_v;
+            this.yp += speed_v;
             break;
     }
 };

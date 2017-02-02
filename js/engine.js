@@ -1,3 +1,4 @@
+"use strict";
 /* Engine.js
  * This file provides the game loop functionality (update entities and render),
  * draws the initial game board on the screen, and then calls the update and
@@ -19,15 +20,15 @@ var Engine = (function(global) {
      * create the canvas element, grab the 2D context for that canvas
      * set the canvas elements height/width and add it to the DOM.
      */
-    var doc = global.document,
-        win = global.window,
-        canvas = doc.createElement('canvas'),
-        ctx = canvas.getContext('2d'),
-        lastTime;
-        stg_tiles = stg.getTiles()
+    var doc = global.document;
+    var win = global.window;
+    var canvas = doc.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var lastTime;
+    var stg_tiles = stg.getTiles();
 
-    canvas.width = stg.canvas.width
-    canvas.height = stg.canvas.height
+    canvas.width = stg.canvas.width;
+    canvas.height = stg.canvas.height;
     doc.body.appendChild(canvas);
 
     /* This function serves as the kickoff point for the game loop itself
