@@ -1,6 +1,7 @@
 "use strict";
 // TODO
 // siatka pol do poruszania
+// future development in app_class.js
 
 var Entity = function() {
     this.xp = undefined;

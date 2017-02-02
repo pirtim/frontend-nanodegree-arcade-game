@@ -1,17 +1,29 @@
 "use strict";
 var stg = {
     canvas : {
-        width : 505,
-        height : 586
+        width : undefined, //stg.addComputable 
+        height : undefined,//586
+        img_height : 171 ,
     },
     time_resolution : 1000.0,
     gameboard : {
-        numRows : 6,
-        numCols : 5,
-        tiles : ["water", "stone", "stone", "stone", "grass", "grass"], // From top to bottom
+        numRows : 7,
+        numCols : 18,
+        tiles : ["water", "stone", "stone", "stone", "stone","grass", "grass"], // From top to bottom
         tile_height : 83,
         tile_width  : 101,
-        entityOffset : 60
+        entityOffset : 25
+    },
+    player : {
+        start_pos : {
+            x : 2,
+            y : 5
+        }
+    },
+    enemies : {
+        speedMin : 1,
+        speedMax : 3.5,
+        danger_zone : 0.8,
     },
     resrc_map : {
         tiles : {
@@ -37,6 +49,12 @@ var stg = {
         test_log   : true,
     }    
 }
+stg.addComputable = function () {
+    this.canvas.width = this.gameboard.numCols * this.gameboard.tile_width,
+    this.canvas.height = this.gameboard.tile_height * (this.gameboard.numRows-1) + this.canvas.img_height
+}
+stg.addComputable()
+
 stg.getTiles = function() { // returns list of links to resources coresponding to tiles
     return this.gameboard.tiles.map(function(key){return this[key]}, this.resrc_map.tiles)
 }

@@ -1,61 +1,88 @@
 "use strict";
 // TODO
 // siatka pol do poruszania
+function rangeRandom (min, max) {
+    return Math.random() * (max - min) + min
+}
+function integerRandom(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 class Entity {
     render () {ctx.drawImage(Resources.get(this.sprite), this.xp, this.yp);}
-    
-    set x(xNew) {this.xp=xNew*stg.gameboard.tile_width; this._x = xNew}
+
+    set x(xNew) { this.xp=xNew*stg.gameboard.tile_width; this._x = xNew }
     get x() { return this._x; }
-    set y(yNew) {this.yp=yNew*stg.gameboard.tile_height; this._y = yNew}
+    set y(yNew) {this.yp=yNew*stg.gameboard.tile_height - stg.gameboard.entityOffset; this._y = yNew}
     get y() { return this._y; }
 }
 
 class Enemy extends Entity {
-    constructor() {
+    constructor(x, y) {
         super()
-        this.xp = 0
-        this.yp = 60
-        this.y = 2    
-        console.log(this.y)
-        console.log(this.yp) 
+        this.x = x
+        this.y = y
+        this.speed = rangeRandom(stg.enemies.speedMin, stg.enemies.speedMax)
         this.sprite = stg.resrc_map.enemies.bug;
     }
-    update(dt) { if (this.xp < 400) {this.xp += 100 * dt} }
+    update(dt) { if (this.x < stg.gameboard.numCols) {
+        this.x += this.speed * dt} else {this.x = -1}
+    }
 }
 
 class Player extends Entity {
     constructor() {
         super()
-        this.xp = 200
-        this.yp = 380
-        this.y = 2    
-        console.log(this.y)
-        console.log(this.yp) 
+        this.goToStart()
         this.sprite = stg.resrc_map.characters.boy;
     }
-    update (dt) {}
+
+    set x(xNew) {
+        if (0 <= xNew && xNew <= stg.gameboard.numCols - 1) {
+            this.xp=xNew*stg.gameboard.tile_width; 
+            this._x = xNew}
+        }
+    get x() { return this._x; }
+
+    set y(yNew) {
+        if (0 <= yNew && yNew <= stg.gameboard.numRows - 1) {
+            this.yp=yNew*stg.gameboard.tile_height - stg.gameboard.entityOffset; 
+            this._y = yNew}}
+    get y() { return this._y; }
+
+    goToStart () {
+        this.x = stg.player.start_pos.x;
+        this.y = stg.player.start_pos.y;
+    }
+    update (dt) {
+        if (this.y === 0) {
+            this.goToStart()
+        }
+    }
     handleInput (key) {
-        var speed_v = stg.gameboard.tile_height
-        var speed_h = stg.gameboard.tile_width
         switch (key) {
             case 'left':
-                this.xp -= speed_h;
+                this.x -= 1;
                 break;
             case 'right':
-                this.xp += speed_h;
+                this.x += 1;
                 break;
             case 'up':
-                this.yp -= speed_v;
+                this.y -= 1;
                 break;
             case 'down':
-                this.yp += speed_v;
+                this.y += 1;
                 break;
         }
     }
 }
 
-var allEnemies = [new Enemy()]
+
+var allEnemies = []
+for (var i = 0; i < 25; i++) {
+    allEnemies.push(new Enemy(rangeRandom(0, stg.gameboard.numCols), integerRandom(1, 4))) 
+}
+// var allEnemies = [new Enemy(rangeRandom(stg.gameboard.numCols), 1),new Enemy(2, 2), new Enemy(0, 3)]
 var player = new Player()
 
 document.addEventListener('keyup', function(e) {
