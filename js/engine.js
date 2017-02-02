@@ -27,9 +27,28 @@ var Engine = (function(global) {
     var lastTime;
     var stg_tiles = stg.getTiles();
 
+    
+    // console.log(win.innerHeight)
+    // console.log(win.innerWidth)
+
     canvas.width = stg.canvas.width;
     canvas.height = stg.canvas.height;
     doc.body.appendChild(canvas);
+    ctx.font="40px Georgia";  
+       
+    ctx.fillText("Wins: ",0,40);
+    ctx.fillText("Deaths: ",200,40);
+
+    var wins = 0
+    var loses = 0
+    ctx.fillText(loses.toString(), 340, 40);
+    ctx.fillText(wins.toString(), 110, 40);
+
+    
+
+
+                // 
+                // ctx.fillText((++loses).toString(), 350, 40);
 
     /* This function serves as the kickoff point for the game loop itself
      * and handles properly calling the update and render methods.
@@ -89,6 +108,9 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             if (enemy.y === player.y && enemy.x - stg.enemies.danger_zone < player.x && enemy.x + stg.enemies.danger_zone > player.x) {
                 player.goToStart()
+                console.log("Lost!")  
+                ctx.clearRect(340, 0, 100, 100)
+                ctx.fillText((++loses).toString(), 340, 40);
             }
         });
     }
@@ -104,8 +126,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
-    }
+        player.update(dt, ()=>{
+            ctx.clearRect(110, 0, 70, 100);
+            ctx.fillText((++wins).toString(), 110, 40);});
+        }
 
     /* This function initially draws the "game level", it will then call
      * the renderEntities function. Remember, this function is called every

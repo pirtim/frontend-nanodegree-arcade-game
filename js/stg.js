@@ -1,28 +1,31 @@
 "use strict";
 var stg = {
     canvas : {
-        width : undefined, //stg.addComputable 
-        height : undefined,//586
-        img_height : 171 ,
+        width  : undefined, //stg.addComputable
+        height : undefined, //stg.addComputable
+        img_height : 171,
     },
     time_resolution : 1000.0,
     gameboard : {
-        numRows : 7,
+        numRows : undefined, //stg.addComputable
         numCols : 18,
-        tiles : ["water", "stone", "stone", "stone", "stone","grass", "grass"], // From top to bottom
+        tiles : ["water", "stone", "stone", "stone", "stone", "stone", "stone", "stone", "grass", "grass"], // From top to bottom
+        tiles_danger : undefined,
         tile_height : 83,
         tile_width  : 101,
         entityOffset : 25
     },
     player : {
         start_pos : {
-            x : 2,
-            y : 5
+            x : undefined, //stg.addComputable
+            y : undefined
         }
     },
     enemies : {
-        speedMin : 1,
-        speedMax : 3.5,
+        number : 30,
+        density : 0.23,
+        speedMin : 0.7,
+        speedMax : 4.5,
         danger_zone : 0.8,
     },
     resrc_map : {
@@ -42,6 +45,7 @@ var stg = {
             "bug" : "images/enemy-bug.png",
         },
         items      : {
+            "star" : "images/Star.png"
         }        
     },
     deployment : {
@@ -49,11 +53,20 @@ var stg = {
         test_log   : true,
     }    
 }
-stg.addComputable = function () {
+stg.addComputable = function (global) {
+    console.log(global.window.innerHeight)
+    console.log(global.window.innerWidth)
+    this.gameboard.numRows = this.gameboard.tiles.length
+    this.gameboard.tiles_danger = this.gameboard.tiles.map((item, index)=>{
+        return (item === "stone") ? index : false;
+    }).filter((item)=>{return item})
+    console.log(this.gameboard.tiles_danger )
     this.canvas.width = this.gameboard.numCols * this.gameboard.tile_width,
     this.canvas.height = this.gameboard.tile_height * (this.gameboard.numRows-1) + this.canvas.img_height
+    this.player.start_pos.x = Math.floor(this.gameboard.numCols / 2) - 1
+    this.player.start_pos.y = this.gameboard.numRows - 1
 }
-stg.addComputable()
+stg.addComputable(this)
 
 stg.getTiles = function() { // returns list of links to resources coresponding to tiles
     return this.gameboard.tiles.map(function(key){return this[key]}, this.resrc_map.tiles)

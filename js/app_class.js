@@ -1,11 +1,13 @@
 "use strict";
-// TODO
-// siatka pol do poruszania
-function rangeRandom (min, max) {
+function randomRange (min, max) {
     return Math.random() * (max - min) + min
 }
-function integerRandom(min, max) {
+function randomInteger(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+Array.prototype.randomElement = function () {
+    return this[Math.floor(Math.random() * this.length)]
 }
 
 class Entity {
@@ -18,11 +20,11 @@ class Entity {
 }
 
 class Enemy extends Entity {
-    constructor(x, y) {
+    constructor(x, y, speed) {
         super()
         this.x = x
         this.y = y
-        this.speed = rangeRandom(stg.enemies.speedMin, stg.enemies.speedMax)
+        this.speed = speed
         this.sprite = stg.resrc_map.enemies.bug;
     }
     update(dt) { if (this.x < stg.gameboard.numCols) {
@@ -54,9 +56,11 @@ class Player extends Entity {
         this.x = stg.player.start_pos.x;
         this.y = stg.player.start_pos.y;
     }
-    update (dt) {
+    update (dt, win_callback) {
         if (this.y === 0) {
             this.goToStart()
+            console.log("Win!")
+            win_callback()
         }
     }
     handleInput (key) {
@@ -76,16 +80,14 @@ class Player extends Entity {
         }
     }
 }
-
-
 var allEnemies = []
-for (var i = 0; i < 25; i++) {
-    allEnemies.push(new Enemy(rangeRandom(0, stg.gameboard.numCols), integerRandom(1, 4))) 
+for (var i = 0; i < stg.enemies.number; i++) {
+    allEnemies.push(new Enemy(randomRange(0, stg.gameboard.numCols), stg.gameboard.tiles_danger.randomElement(), randomRange(stg.enemies.speedMin, stg.enemies.speedMax))) 
 }
-// var allEnemies = [new Enemy(rangeRandom(stg.gameboard.numCols), 1),new Enemy(2, 2), new Enemy(0, 3)]
+// var allEnemies = [new Enemy(randomRange(stg.gameboard.numCols), 1),new Enemy(2, 2), new Enemy(0, 3)]
 var player = new Player()
 
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
     var allowedKeys = {
         37: 'left',
         38: 'up',
