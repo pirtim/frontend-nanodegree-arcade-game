@@ -1,4 +1,24 @@
 "use strict";
+function randomRange (min, max) {
+    return Math.random() * (max - min) + min
+}
+function randomInteger(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+Array.prototype.randomElement = function () {
+    return this[Math.floor(Math.random() * this.length)]
+}
+
+// SUPER UNSAFE
+Array.prototype.multiplySingle = function (n) {
+    var newArr = []
+    for (var i = 0; i < n; i++) {
+        newArr.push(this[0])
+    }
+    return newArr
+}
+
 var stg = {
     canvas : {
         width  : undefined, //stg.addComputable
@@ -10,7 +30,7 @@ var stg = {
         numRows : undefined, //stg.addComputable
         numCols : 18,
         tiles : ["water", "stone", "stone", "stone", "stone", "stone", "stone", "stone", "grass", "grass"], // From top to bottom
-        tiles_danger : undefined,
+        tiles_danger : undefined, //stg.addComputable
         tile_height : 83,
         tile_width  : 101,
         entityOffset : 25
@@ -18,7 +38,7 @@ var stg = {
     player : {
         start_pos : {
             x : undefined, //stg.addComputable
-            y : undefined
+            y : undefined, //stg.addComputable
         }
     },
     enemies : {
@@ -51,20 +71,42 @@ var stg = {
     deployment : {
         production : false,
         test_log   : true,
+        resizable  : true,
     }    
 }
 stg.addComputable = function (global) {
-    console.log(global.window.innerHeight)
-    console.log(global.window.innerWidth)
-    this.gameboard.numRows = this.gameboard.tiles.length
-    this.gameboard.tiles_danger = this.gameboard.tiles.map((item, index)=>{
-        return (item === "stone") ? index : false;
-    }).filter((item)=>{return item})
-    console.log(this.gameboard.tiles_danger )
-    this.canvas.width = this.gameboard.numCols * this.gameboard.tile_width,
-    this.canvas.height = this.gameboard.tile_height * (this.gameboard.numRows-1) + this.canvas.img_height
-    this.player.start_pos.x = Math.floor(this.gameboard.numCols / 2) - 1
-    this.player.start_pos.y = this.gameboard.numRows - 1
+    var innerHeight = global.window.innerHeight - 4 // body.margin *2
+    var innerWidth = global.window.innerWidth - 4
+    console.log("window.height",global.window.innerHeight)
+    console.log("window.width",global.window.innerWidth)    
+    if (this.deployment.resizable) {
+        this.gameboard.numRows = Math.floor((innerHeight - this.canvas.img_height) /  this.gameboard.tile_height) + 1
+        this.gameboard.numCols = Math.floor(innerWidth / this.gameboard.tile_width)
+        this.gameboard.tiles = ["water"].concat(["stone"].multiplySingle(this.gameboard.numRows-3), ["grass", "grass"])
+        this.gameboard.tiles_danger = this.gameboard.tiles.map((item, index)=>{
+            return (item === "stone") ? index : false;
+        }).filter((item)=>{return item})
+        this.canvas.width = this.gameboard.numCols * this.gameboard.tile_width,
+        this.canvas.height = this.gameboard.tile_height * (this.gameboard.numRows-1) + this.canvas.img_height
+        this.player.start_pos.x = Math.floor(this.gameboard.numCols / 2) - 1
+        this.player.start_pos.y = this.gameboard.numRows - 1
+        this.enemies.number = this.gameboard.tiles_danger.length * this.gameboard.numCols * this.enemies.density;
+
+        
+        console.log("canvas.height",this.canvas.height)
+        console.log("canvas.width", this.canvas.width)
+
+    } else {
+        this.gameboard.numRows = this.gameboard.tiles.length
+        this.gameboard.tiles_danger = this.gameboard.tiles.map((item, index)=>{
+            return (item === "stone") ? index : false;
+        }).filter((item)=>{return item})
+        console.log(this.gameboard.tiles_danger )
+        this.canvas.width = this.gameboard.numCols * this.gameboard.tile_width,
+        this.canvas.height = this.gameboard.tile_height * (this.gameboard.numRows-1) + this.canvas.img_height
+        this.player.start_pos.x = Math.floor(this.gameboard.numCols / 2) - 1
+        this.player.start_pos.y = this.gameboard.numRows - 1
+    }
 }
 stg.addComputable(this)
 

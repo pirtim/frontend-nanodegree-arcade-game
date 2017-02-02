@@ -1,14 +1,9 @@
 "use strict";
-function randomRange (min, max) {
-    return Math.random() * (max - min) + min
-}
-function randomInteger(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 Array.prototype.randomElement = function () {
     return this[Math.floor(Math.random() * this.length)]
 }
+
 
 class Entity {
     render () {ctx.drawImage(Resources.get(this.sprite), this.xp, this.yp);}
