@@ -43,9 +43,9 @@ var stg = {
     },
     enemies : {
         number : 30,
-        density : 0.23,
+        density : 0.15,//0.23,
         speedMin : 0.7,
-        speedMax : 4.5,
+        speedMax : 2.5,//4.5,
         danger_zone : 0.8,
     },
     resrc_map : {
@@ -70,7 +70,7 @@ var stg = {
     },
     deployment : {
         production : false,
-        test_log   : true,
+        test_log   : false,
         resizable  : true,
     }    
 }
