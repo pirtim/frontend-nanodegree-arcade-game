@@ -1,4 +1,6 @@
 "use strict";
+// skads pobrane, sprawdzic licencje itp
+
 function swipedetect(el, callback){
     var touchsurface = el;
     var swipedir;
@@ -47,10 +49,6 @@ function swipedetect(el, callback){
   
 var el = document.getElementById('bodyid')
 swipedetect(el, function(swipedir){
-//     swipedir contains either "none", "left", "right", "up", or "down"
     player.handleInput(swipedir)
     console.log('You just swiped: ' + swipedir)
-//     if (swipedir =='left') {
-//         alert('You just swiped left!')
-//     }
 })
